@@ -5,13 +5,13 @@ from PyQt6.QtWidgets import QApplication, QMainWindow
 from PyQt6.QtGui import QPainter, QColor, QPolygonF
 from PyQt6.QtCore import QPointF, QRectF, Qt
 from random import randint
+from Ui import Ui_MainWindow
 
-
-class MyWidget(QMainWindow):
+class MyWidget(QMainWindow, Ui_MainWindow):
     def __init__(self):
-        super().__init__()
-        uic.loadUi('UI.ui', self)
 
+        super().__init__()
+        self.setupUi(self)
         self.pushButton.clicked.connect(self.run)
 
     def run(self):
@@ -24,7 +24,7 @@ class MyWidget(QMainWindow):
 
     def drawer(self, qp):
         size = randint(20, 100)
-        qp.setBrush(QColor(255, 255, 0))
+        qp.setBrush(QColor(randint(0, 255), randint(0, 255), randint(0, 255)))
         qp.setPen(QColor(0, 0, 0))
         qp.drawEllipse(self.random_seat(), size, size)
 
