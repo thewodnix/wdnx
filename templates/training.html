@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+        <title>profesion</title>
+    </head>
+    <body>
+        <h1>Миссия Колонизация Марса</h1>
+    </body>
+        <h4>И на Марсе будут яблони цвести!</h4>
+        {% if 'инженер' in prof or 'строитель' in prof: %}
+            <h1><center>Инженерные тренажеры</center></h1>
+        {% else %}
+            <h1><center>Научные симуляторы</center></h1>
+        {% endif %}
+
+        {% if 'инженер' in prof or 'строитель' in prof: %}
+            <center><img src="/static/img/img1.png"></center>
+        {% else %}
+            <center><img src="/static/img/img.png"></center>
+        {% endif %}
+
+</html>
