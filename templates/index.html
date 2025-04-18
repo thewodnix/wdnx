@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ movie.title }}</title>
+  <style>
+    body {
+      background: #1c1c1c;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      text-align: center;
+    }
+
+    .content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    #loader {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+
+    img {
+      max-width: 300px;
+      width: 100%;
+      height: auto;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+      display: none;
+    }
+
+    h1 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    p {
+      max-width: 500px; /* Ограничиваем ширину */
+      line-height: 1.5em;
+      word-wrap: break-word;  /* Позволяем переносить текст */
+      margin: 0 20px;
+      visibility: hidden;  /* Скрыть описание при загрузке */
+      transition: visibility 0.3s ease;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background: #333;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #555;
+    }
+     .sidebar button {
+      width: 100px;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 0.8em;
+      transition: background 0.3s;
+    }
+
+
+  </style>
+</head>
+<body>
+  <div class="content" id="content">
+    <!-- Спиннер загрузки -->
+    <img id="loader" src="https://i.imgur.com/LLF5iyg.gif" alt="Загрузка...">
+
+    <!-- Постер -->
+    <img id="poster" src="{{ movie.poster_url }}" alt="Poster">
+
+    <h1 id="title">{{ movie.title }}</h1>
+    <p id="description">{{ movie.description }}</p>
+    <button id="btn" onclick="loadNewMovie()">Ещё фильм</button>
+  </div>
+
+<div class="sidebar">
+  <button onclick="loadNewMovie('horror')">Хоррор</button>
+  <button onclick="loadNewMovie('romance')">Романтика</button>
+  <button onclick="loadNewMovie('comedy')">Комедия</button>
+  <button onclick="loadNewMovie('drama')">Драма</button>
+</div>
+
+  <script>
+    const loader = document.getElementById('loader');
+    const poster = document.getElementById('poster');
+    const title = document.getElementById('title');
+    const description = document.getElementById('description');
+    const btn = document.getElementById('btn');
+    const content = document.getElementById('content');
+
+    // Показываем контент и запускаем загрузку изображения
+    window.onload = () => {
+      content.style.opacity = 1;
+      startImageLoad();
+    };
+
+    function startImageLoad() {
+      // прячем всё кроме спиннера
+      poster.style.display = 'none';
+      title.style.visibility = 'hidden';
+      description.style.visibility = 'hidden';
+      btn.style.visibility = 'hidden';
+      loader.style.display = 'block';
+
+      // ждем, когда img с id="poster" успеет загрузиться
+      poster.onload = () => {
+        loader.style.display = 'none';
+        poster.style.display = 'block';
+        title.style.visibility = 'visible';
+        description.style.visibility = 'visible';
+        btn.style.visibility = 'visible';
+      };
+      // на случай, если картинка уже в кэше
+      if (poster.complete) {
+        poster.onload();
+      }
+    }
+
+    async function loadNewMovie() {
+      // начинаем новый цикл загрузки
+      startImageLoad();
+
+      const response = await fetch('/random_movie');
+      const movie = await response.json();
+
+      // обновляем src и тексты
+      poster.src = movie.poster_url || '';
+      title.textContent = movie.title;
+      description.textContent = movie.description;  // Описание теперь будет автоматически переноситься
+    }
+  </script>
+</body>
+</html>
